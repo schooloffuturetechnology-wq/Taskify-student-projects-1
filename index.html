@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify | Workflow Dashboard</title>
+    <meta
+        name="description"
+        content="Taskify is a lightweight workflow dashboard for organizing tasks across the delivery pipeline."
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <div class="hero__copy">
+                <p class="eyebrow">Workflow Management</p>
+                <h1>Taskify</h1>
+                <p class="hero__text">
+                    Plan work clearly, move tasks through delivery, and keep priorities visible in one focused board.
+                </p>
+                <div class="hero__metrics" id="heroMetrics">
+                    <article class="metric-card">
+                        <span class="metric-card__label">Total Tasks</span>
+                        <strong class="metric-card__value" id="totalTasks">0</strong>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-card__label">Completed</span>
+                        <strong class="metric-card__value" id="completedTasks">0</strong>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-card__label">Urgent</span>
+                        <strong class="metric-card__value" id="urgentTasks">0</strong>
+                    </article>
+                </div>
+            </div>
+
+            <section class="panel composer" aria-labelledby="composerTitle">
+                <div class="panel__header">
+                    <div>
+                        <p class="panel__eyebrow">Create Task</p>
+                        <h2 id="composerTitle">Add a new item</h2>
+                    </div>
+                    <button class="ghost-button" id="clearAllBtn" type="button">Clear board</button>
+                </div>
+
+                <form id="taskForm" class="task-form">
+                    <label class="field">
+                        <span>Task name</span>
+                        <input id="taskTitle" name="title" type="text" maxlength="80" placeholder="Launch landing page" required>
+                    </label>
+
+                    <label class="field">
+                        <span>Description</span>
+                        <textarea
+                            id="taskDescription"
+                            name="description"
+                            rows="4"
+                            maxlength="240"
+                            placeholder="Add a clear summary so the next person can pick it up fast."
+                        ></textarea>
+                    </label>
+
+                    <div class="task-form__row">
+                        <label class="field">
+                            <span>Due date</span>
+                            <input id="taskDueDate" name="dueDate" type="date">
+                        </label>
+
+                        <label class="field">
+                            <span>Priority</span>
+                            <select id="taskPriority" name="priority">
+                                <option value="urgent">Urgent</option>
+                                <option value="high">High</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <button class="primary-button" type="submit">Add task</button>
+                </form>
+            </section>
+        </header>
+
+        <main class="board" aria-label="Task workflow board">
+            <section class="column panel" data-status="todo">
+                <header class="column__header">
+                    <div>
+                        <p class="column__eyebrow">Stage 01</p>
+                        <h2>To Do</h2>
+                    </div>
+                    <span class="column__count" data-count="todo">0</span>
+                </header>
+                <div class="column__dropzone" id="todoColumn" aria-label="To do tasks"></div>
+            </section>
+
+            <section class="column panel" data-status="in-progress">
+                <header class="column__header">
+                    <div>
+                        <p class="column__eyebrow">Stage 02</p>
+                        <h2>In Progress</h2>
+                    </div>
+                    <span class="column__count" data-count="in-progress">0</span>
+                </header>
+                <div class="column__dropzone" id="progressColumn" aria-label="In progress tasks"></div>
+            </section>
+
+            <section class="column panel" data-status="review">
+                <header class="column__header">
+                    <div>
+                        <p class="column__eyebrow">Stage 03</p>
+                        <h2>Under Review</h2>
+                    </div>
+                    <span class="column__count" data-count="review">0</span>
+                </header>
+                <div class="column__dropzone" id="reviewColumn" aria-label="Under review tasks"></div>
+            </section>
+
+            <section class="column panel" data-status="done">
+                <header class="column__header">
+                    <div>
+                        <p class="column__eyebrow">Stage 04</p>
+                        <h2>Completed</h2>
+                    </div>
+                    <span class="column__count" data-count="done">0</span>
+                </header>
+                <div class="column__dropzone" id="doneColumn" aria-label="Completed tasks"></div>
+            </section>
+        </main>
+    </div>
+
+    <template id="taskCardTemplate">
+        <article class="task-card" draggable="true">
+            <div class="task-card__top">
+                <span class="task-card__priority"></span>
+                <button class="task-card__delete" type="button" aria-label="Delete task">Delete</button>
+            </div>
+            <h3 class="task-card__title"></h3>
+            <p class="task-card__description"></p>
+            <div class="task-card__meta">
+                <span class="task-card__date"></span>
+                <span class="task-card__status"></span>
+            </div>
+        </article>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
