@@ -180,6 +180,41 @@ button {
     margin-top: 20px;
 }
 
+.data-tools {
+    display: grid;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+}
+
+.data-tools__copy {
+    display: grid;
+    gap: 8px;
+}
+
+.data-tools__text {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.data-tools__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.data-tools__import {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-tools input[type="file"] {
+    display: none;
+}
+
 .task-form__row {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -402,6 +437,10 @@ button {
     .task-form__row,
     .board {
         grid-template-columns: 1fr;
+    }
+
+    .data-tools__actions {
+        flex-direction: column;
     }
 
     .column {

@@ -16,6 +16,7 @@ Taskify is a lightweight task management dashboard with a professional Kanban-st
 - `style.css` - application styling
 - `app.js` - task state and UI logic
 - `taskify.html` - redirect to `index.html` for compatibility
+- `taskify-data.txt` - sample text backup format for import/export
 
 ## Run locally
 

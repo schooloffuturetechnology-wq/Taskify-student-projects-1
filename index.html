@@ -86,6 +86,18 @@
 
                     <button class="primary-button" type="submit">Add task</button>
                 </form>
+
+                <div class="data-tools">
+                    <div class="data-tools__copy">
+                        <p class="panel__eyebrow">Backup</p>
+                        <p class="data-tools__text">Export your board to a text file or import it later on any device.</p>
+                    </div>
+                    <div class="data-tools__actions">
+                        <button class="ghost-button" id="exportTasksBtn" type="button">Export TXT</button>
+                        <label class="ghost-button data-tools__import" for="importTasksFile">Import TXT</label>
+                        <input id="importTasksFile" type="file" accept=".txt,application/json,text/plain">
+                    </div>
+                </div>
             </section>
         </header>
 

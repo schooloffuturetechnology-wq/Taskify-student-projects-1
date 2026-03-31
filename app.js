@@ -21,6 +21,8 @@ const STATUS_CONFIG = {
 
 const form = document.getElementById("taskForm");
 const clearAllButton = document.getElementById("clearAllBtn");
+const exportTasksButton = document.getElementById("exportTasksBtn");
+const importTasksFileInput = document.getElementById("importTasksFile");
 const template = document.getElementById("taskCardTemplate");
 
 let tasks = loadTasks();
@@ -31,6 +33,8 @@ initialize();
 function initialize() {
     form.addEventListener("submit", handleTaskSubmit);
     clearAllButton.addEventListener("click", handleClearBoard);
+    exportTasksButton.addEventListener("click", handleExportTasks);
+    importTasksFileInput.addEventListener("change", handleImportTasks);
 
     Object.entries(STATUS_CONFIG).forEach(([status, config]) => {
         const dropzone = document.getElementById(config.containerId);
@@ -98,6 +102,57 @@ function handleClearBoard() {
     tasks = [];
     saveTasks();
     renderBoard();
+}
+
+function handleExportTasks() {
+    const exportPayload = JSON.stringify({
+        exportedAt: new Date().toISOString(),
+        tasks
+    }, null, 2);
+
+    const blob = new Blob([exportPayload], { type: "text/plain;charset=utf-8" });
+    const downloadUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = downloadUrl;
+    link.download = "taskify-data.txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(downloadUrl);
+}
+
+function handleImportTasks(event) {
+    const [file] = event.target.files;
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        try {
+            const parsedFile = JSON.parse(String(reader.result));
+            const importedTasks = Array.isArray(parsedFile) ? parsedFile : parsedFile.tasks;
+
+            if (!Array.isArray(importedTasks)) {
+                throw new Error("Invalid task file");
+            }
+
+            tasks = importedTasks
+                .filter(isValidTaskShape)
+                .map(normalizeImportedTask);
+
+            saveTasks();
+            renderBoard();
+        } catch (error) {
+            window.alert("Could not import that file. Use a Taskify export file.");
+            console.error("Import failed:", error);
+        } finally {
+            importTasksFileInput.value = "";
+        }
+    };
+
+    reader.readAsText(file);
 }
 
 function handleDragOver(event, status) {
@@ -200,6 +255,30 @@ function updateSummary() {
     document.getElementById("totalTasks").textContent = String(tasks.length);
     document.getElementById("completedTasks").textContent = String(completedTasks);
     document.getElementById("urgentTasks").textContent = String(urgentTasks);
+}
+
+function isValidTaskShape(task) {
+    return (
+        task &&
+        typeof task === "object" &&
+        typeof task.title === "string" &&
+        typeof task.priority === "string" &&
+        typeof task.status === "string"
+    );
+}
+
+function normalizeImportedTask(task) {
+    const fallbackStatus = Object.hasOwn(STATUS_CONFIG, task.status) ? task.status : "todo";
+
+    return {
+        id: typeof task.id === "string" && task.id ? task.id : crypto.randomUUID(),
+        title: task.title.trim(),
+        description: typeof task.description === "string" ? task.description : "",
+        dueDate: typeof task.dueDate === "string" ? task.dueDate : "",
+        priority: ["urgent", "high", "medium", "low"].includes(task.priority) ? task.priority : "medium",
+        status: fallbackStatus,
+        createdAt: typeof task.createdAt === "string" ? task.createdAt : new Date().toISOString()
+    };
 }
 
 function formatDate(dateString) {
